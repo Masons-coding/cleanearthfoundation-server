@@ -6,6 +6,7 @@
     return knex.schema.createTable('clean_ups', (table) => {
       table.increments('id').primary();
       table.string("name").notNullable();
+      table.string("email").notNullable();
       table.date('date_of_clean_up').notNullable();
       table.string('city').notNullable();
       table.string('state').notNullable();

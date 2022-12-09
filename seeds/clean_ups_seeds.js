@@ -9,11 +9,12 @@ exports.seed = async function(knex) {
     {
       name: "Mason Clarke",
       date_of_clean_up: '2022-12-14',
+      email: "Maclarkegdci@gmail.com",
       city: "Goderich",
       state: "Ontario",
       country: "Canada",
-      long_map_value: 43.7333,
-      lat_map_value: -81.7000
+      long_map_value: -80,
+      lat_map_value: 44
     },
   ]);
 };

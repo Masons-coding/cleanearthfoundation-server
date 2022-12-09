@@ -28,7 +28,7 @@ router.post("/register", async (req, res) => {
         
         if (users.length !== 0) {
             return res.status(400).json({
-                message: "User already exists"
+                message: "User with that email already exists"
             })
         }
 
@@ -83,7 +83,7 @@ router.post("/login", async (req, res) => {
         })
     }
     
-    const token = jwt.sign({ user_id: user.id }, process.env.SECRET_KEY);
+    const token = jwt.sign({ user_id: user.id}, process.env.SECRET_KEY);
 
     return res.status(200).json({
         message: "User logged in successfully",
@@ -91,52 +91,55 @@ router.post("/login", async (req, res) => {
     })
 });
 
-// /**
-//  *  See the specific user information of the user that is logged in
-//  */
-// router.get("/profile", (req, res) => {
-//     // req.headers.authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI..."
-//     if (!req.headers.authorization) {
-//         return res.status(400).json({
-//             message: "Bearer token required"
-//         })
-//     }
+// router.get('/userinfo', async (_req, res) => {
+//     const userData = await knex("users");
+//     res.status(200).json(userData);
+//   });
 
-//     const bearerTokenArray = req.headers.authorization.split(" ");
-//     if (bearerTokenArray.length !== 2) {
-//         return res.status(400).json({
-//             message: "Bearer token required"
-//         })
-//     }
+/* GET current user */
+router.get("/current", (req, res) => {
+    // req.headers.authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI..."
+    if (!req.headers.authorization) {
+        return res.status(400).json({
+            message: "Bearer token required"
+        })
+    }
 
-//     const token = bearerTokenArray[1];
-//     // Verify the JWT
-//     jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
-//         if (err) {
-//             // if not valid -> send an error response back (401)
-//             return res.status(401).json({
-//                 message: "Invalid token"
-//             })
-//         }
+    const bearerTokenArray = req.headers.authorization.split(" ");
+    if (bearerTokenArray.length !== 2) {
+        return res.status(400).json({
+            message: "Bearer token required"
+        })
+    }
 
-//         // - if valid JWT
-//             // - in JWT payload -> grab the user id
-//             // - using that user id -> get profile information for that user! (200) 
-//         const users = await knex("users")
-//             .where({ id: decoded.user_id });
+    const token = bearerTokenArray[1];
+    // Verify the JWT
+    jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
+        if (err) {
+            // if not valid -> send an error response back (401)
+            return res.status(401).json({
+                message: "Invalid token"
+            })
+        }
 
-//         if (users.length === 0) {
-//             return res.status(404).json({
-//                 message: "User not found"
-//             })
-//         }
+        // - if valid JWT
+            // - in JWT payload -> grab the user id
+            // - using that user id -> get profile information for that user! (200) 
+        const users = await knex("users")
+            .where({ id: decoded.user_id });
 
-//         const user = users[0];
-//         delete user.password;
-//         delete user.id;
+        if (users.length === 0) {
+            return res.status(404).json({
+                message: "User not found"
+            })
+        }
 
-//         return res.json(user);
-//     });
-// });
+        const user = users[0];
+        delete user.password;
+        delete user.id;
+
+        return res.json(user);
+    });
+});
 
 module.exports = router;
