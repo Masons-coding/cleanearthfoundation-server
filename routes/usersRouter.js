@@ -91,14 +91,8 @@ router.post("/login", async (req, res) => {
     })
 });
 
-// router.get('/userinfo', async (_req, res) => {
-//     const userData = await knex("users");
-//     res.status(200).json(userData);
-//   });
-
 /* GET current user */
 router.get("/current", (req, res) => {
-    // req.headers.authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI..."
     if (!req.headers.authorization) {
         return res.status(400).json({
             message: "Bearer token required"
