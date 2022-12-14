@@ -8,6 +8,7 @@
       table.string("name").notNullable();
       table.string("email").notNullable();
       table.date('date_of_clean_up').notNullable();
+      table.string("time_of_clean_up").notNullable();
       table.string('city').notNullable();
       table.string('state').notNullable();
       table.string('country').notNullable();

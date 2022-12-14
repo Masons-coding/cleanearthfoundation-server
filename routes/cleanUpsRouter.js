@@ -4,12 +4,13 @@ const knex = require("../knexConfig.js");
 
 
 router.post("/register", async (req, res) => {
-    const { name, date_of_clean_up, email, city, state, country, long_map_value, lat_map_value } = req.body;
+    const { name, date_of_clean_up, time_of_clean_up, email, city, state, country, long_map_value, lat_map_value } = req.body;
 
     // Validate form inputs
     if (
         !name ||
         !date_of_clean_up ||
+        !time_of_clean_up ||
         !email||
         !city ||
         !state ||
@@ -27,6 +28,7 @@ router.post("/register", async (req, res) => {
             .insert({
                 name: name,
                 date_of_clean_up: date_of_clean_up,
+                time_of_clean_up: time_of_clean_up,
                 email: email,
                 city: city,
                 state: state,
@@ -46,7 +48,7 @@ router.post("/register", async (req, res) => {
 router.get("/cleanup", async (req, res) => {
     try {
         const cleanUpData = await knex("clean_ups")
-        .select('id','name', 'date_of_clean_up', 'city', 'state', 'country', 'long_map_value', 'lat_map_value')
+        .select('id','name', 'date_of_clean_up', 'time_of_clean_up', 'city', 'state', 'country', 'long_map_value', 'lat_map_value')
         res.status(200).json(cleanUpData);
     } catch (error) {
         res.status(500).json({ error: error });
