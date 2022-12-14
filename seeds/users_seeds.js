@@ -7,11 +7,11 @@
   await knex('users').del()
   await knex('users').insert([
     {
-      first_name: "Mason",
-      last_name: "Clarke",
-      cell_phone: '519-955-7763',
-      email: "Maclarkegdci@gmail.com",
-      password: "bailey66"
+      first_name: "User",
+      last_name: "User",
+      cell_phone: '+15199556645',
+      email: "user@gmail.com",
+      password: "Password123"
     },
   ]);
 };
