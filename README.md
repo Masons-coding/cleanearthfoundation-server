@@ -19,8 +19,8 @@ To deploy this project run
 
   npm run migrate:up - Runs migrations for tables
   npm run migrate:down - Deletes migrations for tables
-  npm run seed - Runs the seed files for data 
-  *** No seed file for the users table, please sign up through the form for it to work properly***
+  npm run seed - Runs the seed files for data - You must have at least one user added to the users table through the sign up form for the seed file to work.
+  *** No seed file for the users table, please sign up through the sign up form for it to work properly***
 
 
   npm run dev - Starts the nodemon server
