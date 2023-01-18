@@ -130,10 +130,92 @@ router.get("/current", (req, res) => {
 
         const user = users[0];
         delete user.password;
-        delete user.id;
 
         return res.json(user);
     });
 });
 
+router.post("/join", async (req, res) => {
+    const { clean_up_id } = req.body;
+    
+    if (!req.headers.authorization) {
+        return res.status(400).json({
+            message: "Bearer token required"
+        })
+    }
+
+    const bearerTokenArray = req.headers.authorization.split(" ");
+    if (bearerTokenArray.length !== 2) {
+        return res.status(400).json({
+            message: "Bearer token required"
+        })
+    }
+
+    const token = bearerTokenArray[1];
+
+    jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
+        if (err) {
+            // if not valid -> send an error response back (401)
+            return res.status(401).json({
+                message: "Invalid token"
+            })
+        }
+        const userJoin = await knex("users")
+        .where({ id: decoded.user_id })
+        .update({
+            clean_up_id: clean_up_id
+        });
+        res.status(201).json({
+            message: "User has been added to clean up"
+        })
+    });
+});
+
 module.exports = router;
+
+
+
+
+// router.post("/join", async (req, res) => {
+//     const {clean_up_id } = req.body;
+    
+//     if (!req.headers.authorization) {
+//         return res.status(400).json({
+//             message: "Bearer token required"
+//         })
+//     }
+
+//     const bearerTokenArray = req.headers.authorization.split(" ");
+//     if (bearerTokenArray.length !== 2) {
+//         return res.status(400).json({
+//             message: "Bearer token required"
+//         })
+//     }
+
+//     const token = bearerTokenArray[1];
+
+//     jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
+//         if (err) {
+//             // if not valid -> send an error response back (401)
+//             return res.status(401).json({
+//                 message: "Invalid token"
+//             })
+//         }
+//         const userJoin = await knex("users")
+//         .where({ id: decoded.user_id })
+//         const user = userJoin[0]
+
+//         const userJoin2 = await knex("users")
+//         .insert({
+//             first_name: user.first_name,
+//             last_name: user.last_name,
+//             cell_phone: user.cell_phone,
+//             email: "None",
+//             password: user.password,
+//             clean_up_id: clean_up_id
+//         });
+//         res.status(201).json({
+//             message: "User has been added to clean up"
+//         })
+//     });
+// });
