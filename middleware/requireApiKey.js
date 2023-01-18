@@ -12,5 +12,4 @@ function requireApiKey(req, res, next) {
         error: "Invalid key: " + apiKeyQuery
     })
 }
-
 module.exports = requireApiKey;

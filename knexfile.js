@@ -1,5 +1,4 @@
 require("dotenv").config();
-// Update with your config settings.
 
 const {
   DB_LOCAL_USER,
