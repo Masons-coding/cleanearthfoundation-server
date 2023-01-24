@@ -66,6 +66,16 @@ router.get("/cleanup/:id", async (req, res) => {
       }
 });
 
+//Get all clean ups that have an id of whatever the :id is - For clean up id that is saved to the user table
+router.get("/cleanupsjoined/:id", async (req, res) => {
+    try {
+        const cleanUpData = await knex("clean_ups").where({ id: req.params.id });
+        res.status(200).json(cleanUpData);
+      } catch (error) {
+        res.status(500).json({ error: error });
+      }
+});
+
 router.get("/cleanupbyuser/:user_id", async (req, res) => {
     try {
         const cleanUpData = await knex("clean_ups").where({ user_id: req.params.user_id });
