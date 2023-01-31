@@ -1,14 +1,15 @@
 require("dotenv").config();
-
-const {
-  DB_CONNECTION
-} = process.env;
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
-module.exports = {
-  client: "mysql",
-  connection: {
-    DB_CONNECTION
+ module.exports = {
+  development: {
+    client: 'mysql2',
+    connection: {
+      host : process.env.JAWSDB_URL,
+      user : process.env.JAWSDB_USER,
+      password : process.env.JAWSDB_PASSWORD,
+      database : process.env.JAWSDB_DB
+    }
   }
 };
