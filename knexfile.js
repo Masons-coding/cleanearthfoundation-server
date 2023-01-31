@@ -7,7 +7,7 @@ const {
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 module.exports = {
-  client: "mysql2",
+  client: "mysql",
   connection: {
     DB_CONNECTION
   }
