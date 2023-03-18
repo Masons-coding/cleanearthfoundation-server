@@ -3,7 +3,7 @@ require("dotenv").config();
  * @type { Object.<string, import("knex").Knex.Config> }
  */
  module.exports = {
-  development: {
+  production: {
     client: 'mysql2',
     connection: {
       host : process.env.JAWSDB_URL,
