@@ -135,43 +135,111 @@ router.get("/current", (req, res) => {
     });
 });
 
+//PROCESS FOR WHEN THE USER CLICKS TO JOIN A CLEAN-UP
 router.post("/join", async (req, res) => {
     const { clean_up_id } = req.body;
-    
+
     if (!req.headers.authorization) {
         return res.status(400).json({
             message: "Bearer token required"
-        })
+        });
     }
 
     const bearerTokenArray = req.headers.authorization.split(" ");
     if (bearerTokenArray.length !== 2) {
         return res.status(400).json({
             message: "Bearer token required"
-        })
+        });
     }
 
     const token = bearerTokenArray[1];
 
     jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
         if (err) {
-            // if not valid -> send an error response back (401)
             return res.status(401).json({
                 message: "Invalid token"
-            })
+            });
         }
-        const userJoin = await knex("users")
-        .where({ id: decoded.user_id })
-        .update({
-            clean_up_id: clean_up_id
-        });
-        res.status(201).json({
-            message: "User has been added to clean up"
-        })
+
+        try {
+            const exists = await knex("user_cleanups")
+                .where({ user_id: decoded.user_id, clean_up_id })
+                .first();
+
+            if (!exists) {
+                await knex("user_cleanups").insert({
+                    user_id: decoded.user_id,
+                    clean_up_id,
+                });
+            }
+
+            res.status(201).json({
+                message: "User has been added to the cleanup",
+            });
+        } catch (error) {
+            res.status(500).json({ message: "Server error", error });
+        }
     });
 });
 
+//GET ALL DATA FROM USER_CLEANUPS table
+router.get("/allcleanupsjoined/:user_id", async (req, res) => {
+    try {
+        const cleanUpJoinedData = await knex("user_cleanups").where({ user_id: req.params.user_id });
+        res.status(200).json(cleanUpJoinedData);
+      } catch (error) {
+        res.status(500).json({ error: error });
+      }
+});
+
 module.exports = router;
+
+
+
+
+//OLD PROCESS OF WHEN A USER JOINS A CLEAN UP - START
+
+// router.post("/join", async (req, res) => {
+//     const { clean_up_id } = req.body;
+    
+//     if (!req.headers.authorization) {
+//         return res.status(400).json({
+//             message: "Bearer token required"
+//         })
+//     }
+
+//     const bearerTokenArray = req.headers.authorization.split(" ");
+//     if (bearerTokenArray.length !== 2) {
+//         return res.status(400).json({
+//             message: "Bearer token required"
+//         })
+//     }
+
+//     const token = bearerTokenArray[1];
+
+//     jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
+//         if (err) {
+//             // if not valid -> send an error response back (401)
+//             return res.status(401).json({
+//                 message: "Invalid token"
+//             })
+//         }
+//         const userJoin = await knex("users")
+//         .where({ id: decoded.user_id })
+//         .update({
+//             clean_up_id: clean_up_id
+//         });
+//         res.status(201).json({
+//             message: "User has been added to clean up"
+//         })
+//     });
+// });
+
+//OLD PROCESS OF WHEN A USER JOINS A CLEAN UP - END
+
+
+
+
 
 
 

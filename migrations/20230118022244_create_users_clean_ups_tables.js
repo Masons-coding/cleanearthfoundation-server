@@ -23,8 +23,11 @@ exports.up = function(knex) {
             table.string('cell_phone');
             table.string('email').notNullable().unique();
             table.string('password').notNullable();
-          })
-          .alterTable('clean_ups', (table) => {
+        })
+        .createTable('user_cleanups', (table) => {
+            table.increments('id').primary();
+        })
+        .alterTable('user_cleanups', (table) => {
             table.integer("user_id").unsigned().notNullable();
             table
             .foreign("user_id")
@@ -32,16 +35,39 @@ exports.up = function(knex) {
             .inTable("users")
             .onUpdate("CASCADE")
             .onDelete("CASCADE");
-          })
-          .alterTable('users', (table) => {
-            table.integer("clean_up_id").unsigned();
+        })
+        .alterTable('user_cleanups', (table) => {
+            table.integer("clean_up_id").unsigned().notNullable();
             table
             .foreign("clean_up_id")
             .references("id")
             .inTable("clean_ups")
             .onUpdate("CASCADE")
             .onDelete("CASCADE");
-          });
+        })
+        .alterTable('clean_ups', (table) => {
+            table.integer("user_id").unsigned().notNullable();
+            table
+            .foreign("user_id")
+            .references("id")
+            .inTable("users")
+            .onUpdate("CASCADE")
+            .onDelete("CASCADE");
+        });
+
+
+          // Old way of joing clean-ups - START
+        //   .alterTable('users', (table) => {
+        //     table.integer("clean_up_id").unsigned();
+        //     table
+        //     .foreign("clean_up_id")
+        //     .references("id")
+        //     .inTable("clean_ups")
+        //     .onUpdate("CASCADE")
+        //     .onDelete("CASCADE");
+        //   });
+          
+          // Old way of joing clean-ups -END
 };
 
 /**

@@ -85,7 +85,7 @@ router.get("/cleanupbyuser/:user_id", async (req, res) => {
       }
 });
 
-
+//Delete clean up created by the user
 router.delete("/delete/:id", async (req, res) => {
     try {
         const foundCleanUp = await knex("clean_ups").where({
@@ -97,6 +97,27 @@ router.delete("/delete/:id", async (req, res) => {
     
         await knex('clean_ups').where({
             id: foundCleanUp[0].id
+        }).del();
+        res.sendStatus(204);
+    
+      } catch(error){
+        console.log(error)
+        res.status(500).json({ error: error });
+      }
+  });
+
+//Delete clean up joined by the user
+router.delete("/deletejoined/:id", async (req, res) => {
+    try {
+        const foundCleanUpJoined = await knex("user_cleanups").where({
+          clean_up_id: req.params.id,
+        });
+        if (!foundCleanUpJoined.length) {
+          return res.status(404).json({ message: "Clean up doesn't exist!" + req.params.id });
+        }
+    
+        await knex('user_cleanups').where({
+            id: foundCleanUpJoined[0].id
         }).del();
         res.sendStatus(204);
     
